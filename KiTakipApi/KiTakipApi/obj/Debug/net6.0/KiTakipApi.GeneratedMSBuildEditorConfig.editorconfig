@@ -1,0 +1,101 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = KiTakipApi
+build_property.RootNamespace = KiTakipApi
+build_property.ProjectDir = C:\Users\Hp\source\repos\KitakipApi\KiTakipApi\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\Hp\source\repos\KitakipApi\KiTakipApi
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WBook/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV0Jvb2tcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WBook/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV0Jvb2tcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WBook/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV0Jvb2tcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WBook/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV0Jvb2tcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WBook/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV0Jvb2tcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WLogin/WLogin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV0xvZ2luXFdMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUserBook/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJCb29rXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUserBook/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJCb29rXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUserBook/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJCb29rXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUserBook/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJCb29rXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUserBook/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJCb29rXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUser/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUser/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUser/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUser/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/WUser/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV1VzZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Hp/source/repos/KitakipApi/KiTakipApi/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-z6h4h54id1

@@ -1,0 +1,65 @@
+﻿@model KiTakipApi.Models.User
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PassHash" class="control-label"></label>
+                <input asp-for="PassHash" class="form-control" />
+                <span asp-validation-for="PassHash" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PassSalt" class="control-label"></label>
+                <input asp-for="PassSalt" class="form-control" />
+                <span asp-validation-for="PassSalt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RefreshToken" class="control-label"></label>
+                <input asp-for="RefreshToken" class="form-control" />
+                <span asp-validation-for="RefreshToken" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TokenCreated" class="control-label"></label>
+                <input asp-for="TokenCreated" class="form-control" />
+                <span asp-validation-for="TokenCreated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TokenExpires" class="control-label"></label>
+                <input asp-for="TokenExpires" class="form-control" />
+                <span asp-validation-for="TokenExpires" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
