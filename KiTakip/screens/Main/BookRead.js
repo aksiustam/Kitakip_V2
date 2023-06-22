@@ -1,43 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
-  TouchableOpacity,
-  View,
   useWindowDimensions,
   StyleSheet,
+  Dimensions,
+  View,
   Text,
-  Button,
-  Platform,
+  TouchableOpacity,
 } from "react-native";
 import Colors from "../../constants/Colors";
-import { dark } from "../../constants/ReaderTheme/Dark";
-import { light } from "../../constants/ReaderTheme/Light";
 import { Reader, ReaderProvider, useReader } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Feather, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import Modal from "react-native-modal";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
+import { Feather } from "@expo/vector-icons";
 function Inner() {
   const route = useRoute();
   const book = route.params;
   const { width, height } = useWindowDimensions();
   const [page, setPage] = useState();
-  const [font, setFont] = useState(0);
-  const [theme, setTheme] = useState(0);
-  const { changeFontSize, getCurrentLocation, changeTheme } = useReader();
+  const [font, setFont] = useState("16px");
+  const { changeFontSize, getCurrentLocation } = useReader();
+
+  const navigation = useNavigation();
+  const menubar = () => {
+    navigation.openDrawer();
+  };
 
   //#region Page Load
 
@@ -63,6 +51,9 @@ function Inner() {
     const loadPage = async () => {
       try {
         const loadcfi = await AsyncStorage.getItem(`@BookData&${book.id}`);
+        const loadfont = await AsyncStorage.getItem(`@FontSize`);
+
+        setFont(loadfont);
         setPage(JSON.parse(loadcfi));
       } catch (error) {
         console.error("Error loading counter from AsyncStorage:", error);
@@ -72,207 +63,38 @@ function Inner() {
   }, []);
   //#endregion
 
-  const FontSize = () => {
-    if (font == 0) {
-      changeFontSize("10px");
-      setFont(font + 1);
-    } else if (font == 1) {
-      changeFontSize("16px");
-      setFont(font + 1);
-    } else if (font == 2) {
-      changeFontSize("20px");
-      setFont(font + 1);
-    } else if (font == 3) {
-      changeFontSize("10px");
-      setFont(0);
-    }
-  };
-
-  const Theme = () => {
-    if (theme == 0) {
-      changeTheme(dark);
-      setTheme(theme + 1);
-    } else {
-      changeTheme(light);
-      setTheme(0);
-    }
-  };
-
-  //#region DATE
-
-  const [date, setDate] = useState(new Date());
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
-  };
-
-  const showMode = (currentMode) => {
-    DateTimePickerAndroid.open({
-      value: date,
-      onChange,
-      display: "spinner",
-      mode: currentMode,
-      is24Hour: true,
-    });
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
-  };
-
-  //#endregion
-
-  const [isModalVisible, setModalVisible] = useState(false);
-
-  //#region Notification
-
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
-  //#endregion
   return (
     <>
-      <SafeAreaView>
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.box}
-            onPress={() => {
-              setModalVisible(true);
-            }}
+      <View style={styles.header}>
+        <View style={styles.topbar}>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={styles.topbartext}
           >
-            <View>
-              <Feather name="save" size={24} color="white" />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.box} onPress={FontSize}>
-            <View>
-              <AntDesign name="filetext1" size={24} color="white" />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.box} onPress={Theme}>
-            <View>
-              <MaterialCommunityIcons
-                name="theme-light-dark"
-                size={24}
-                color="white"
-              />
-            </View>
-          </TouchableOpacity>
+            {book.name}{" "}
+          </Text>
         </View>
+        <TouchableOpacity style={styles.menubox} onPress={menubar}>
+          <Feather name="menu" size={50} color="#0B4455" />
+        </TouchableOpacity>
+      </View>
+      <SafeAreaView style={styles.container}>
         <Reader
           src={WEB_URL + `/api/Book/Download/${book.id}.epub`}
           width={width}
-          height={height * 0.9}
+          height={height * 0.93}
           fileSystem={useFileSystem}
           onSwipeLeft={Pageupcount}
           onSwipeRight={Pagedowncount}
           initialLocation={page}
+          onReady={() => changeFontSize(font)}
         />
       </SafeAreaView>
-      <Modal
-        isVisible={isModalVisible}
-        backdropOpacity={0.35}
-        style={{ margin: 0 }}
-        statusBarTranslucent
-        onBackdropPress={() => {
-          setModalVisible(false);
-        }}
-        onBackButtonPress={() => {
-          setModalVisible(false);
-        }}
-        deviceWidth={width}
-        deviceHeight={height * 2}
-      >
-        <View style={styles.modalcontainer}>
-          <Text style={{ textAlign: "center" }}>HATIRLATICI!</Text>
-          <Button onPress={showDatepicker} title="Tarih" />
-          <Button onPress={showTimepicker} title="Saat" />
-          <Text>Your expo push token: {expoPushToken}</Text>
-          <Text>{date.toLocaleString()} a Bildirim Oluştur</Text>
-          <Button
-            title="Bildirim Oluştur"
-            onPress={async () => {
-              setModalVisible(false);
-              await schedulePushNotification();
-            }}
-          />
-        </View>
-      </Modal>
     </>
   );
 }
 
-async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "KiTakip Uygulaması",
-      body: "Kitap okuma zamanınız geldi",
-    },
-    trigger: { seconds: 3 },
-  });
-}
-async function registerForPushNotificationsAsync() {
-  let token;
-
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "default",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
-    });
-  }
-
-  if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
-  } else {
-    alert("Must use physical device for Push Notifications");
-  }
-
-  return token;
-}
 const BookRead = () => {
   return (
     <ReaderProvider>
@@ -284,26 +106,30 @@ const BookRead = () => {
 export default BookRead;
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    backgroundColor: Colors.light.tint,
-    justifyContent: "space-between",
-  },
-  box: {
-    width: 60,
-    height: 60,
-    borderRadius: 50,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: -5,
   },
-  modalcontainer: {
-    width: 200,
-    height: 260,
-    backgroundColor: "white",
-    position: "relative",
-    alignSelf: "center",
-    fontWeight: "bold",
-    padding: 8,
-    justifyContent: "space-between",
-    flexDirection: "column",
+  header: { paddingTop: Dimensions.get("window").height * 0.08 },
+  topbar: {
+    position: "absolute",
+    backgroundColor: "#0B4455",
+    marginTop: 44,
+    width: Dimensions.get("window").width * 0.76,
+    height: Dimensions.get("window").height * 0.066,
+    paddingLeft: 10,
+    justifyContent: "center",
+  },
+  topbartext: { fontSize: 24, color: "yellow", fontWeight: "600" },
+  menubox: {
+    position: "absolute",
+    zIndex: 5,
+    top: Dimensions.get("window").height * 0.06,
+    left: Dimensions.get("window").width * 0.81,
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

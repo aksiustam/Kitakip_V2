@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
   "name": "Bin Dokuz Yüz Seksen Dört - 1984",
   "page": 296,
   "pub": "KAPRA YAYINCILIK",
-  "pubdate": "2021-01-05T14:31:13.805",
+  "pubdate": "202r1-01-05T14:31:13.805",
   "url": "George Orwell - Bin Dokuz Yüz Seksen Dört.epub",
   "writer": "George Orwell",
 } */
