@@ -11,10 +11,8 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation, reset } from "@react-navigation/native";
-import axios from "axios";
-import WEB_URL from "../../../constants/Settings";
 import { useAuth } from "../../../contexts/Auth";
-import BookBox from "../../../components/BookBox";
+
 import Colors from "../../../constants/Colors";
 
 const Home = () => {

@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { useAuth } from "../../../contexts/Auth";
 import axios from "axios";
+import { API_URL } from "../../../constants/Settings";
 const Favori = () => {
   const navigation = useNavigation();
   const menubar = () => {
@@ -27,12 +28,11 @@ const Favori = () => {
 
   useEffect(() => {
     getUserBooks();
-    console.log(userbook);
   }, []);
 
   const getUserBooks = async () => {
     await axios
-      .get(WEB_URL + `/api/UserBook/${auth.authData.id}`, {
+      .get(API_URL + `/api/UserBook/${auth.authData.id}`, {
         headers: {
           Authorization: `Bearer ${auth.authData.token}`,
         },

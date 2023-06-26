@@ -1,19 +1,8 @@
-import React, { useRef, useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useAuth } from "../../contexts/Auth";
-import { FlatListIndicator } from "@fanchenbao/react-native-scroll-indicator";
-import Page from "../../components/LoginMenu/Page";
-import Slider from "../../components/LoginMenu/Slider";
+import React from "react";
+import { StyleSheet, View, Text, Dimensions, ScrollView } from "react-native";
 
-const Login = () => {
+const Slider = (props) => {
+  const { item, index } = props;
   const cards = [
     {
       title: "Item 1",
@@ -37,47 +26,57 @@ const Login = () => {
     },
   ];
 
-  const auth = useAuth();
-  const signIn = async () => {
-    const data = await auth.signIn(email, pass);
-    setError(data);
-  };
   const ITEM_WIDTH = Dimensions.get("window").width;
-  const ITEM_HEIGHT = 200;
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <LinearGradient
-        colors={["#0B4455", "#086D65"]}
-        style={{ flex: 1, zIndex: -5 }}
-        start={{ x: 0.1, y: 0.1 }}
-        end={{ x: 0.9, y: 0.9 }}
-        locations={[0.1, 0.7]}
-      >
-        {
+    <>
+      <View style={styles.fullcontainer}>
+        <View style={styles.fixcontainer}>
+          <Text>HEY</Text>
+        </View>
+        <View style={{ flex: 1 }}>
           <ScrollView
             horizontal={true}
             decelerationRate={0.09}
             snapToInterval={ITEM_WIDTH}
             bounces={false}
             scrollEventThrottle={6}
-            nestedScrollEnabled={true}
           >
-            <Page />
-            <Slider />
+            {cards.map((item, index) => {
+              return (
+                <>
+                  <View style={styles.upcontainer}>
+                    <View style={styles.container}>
+                      <Text>HEY</Text>
+                    </View>
+                  </View>
+                </>
+              );
+            })}
           </ScrollView>
-        }
-      </LinearGradient>
-    </SafeAreaView>
+        </View>
+      </View>
+    </>
   );
 };
-
-export default Login;
 
 const styles = StyleSheet.create({
   fullcontainer: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  fixcontainer: {
+    position: "absolute",
+    top: 0,
+    width: Dimensions.get("window").width / 1.6,
+    height: Dimensions.get("window").height / 9,
+    backgroundColor: "white",
+  },
+  upcontainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     width: Dimensions.get("window").width,
   },
   container: {
@@ -91,3 +90,5 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
 });
+
+export default Slider;

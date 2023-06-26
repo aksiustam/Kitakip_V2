@@ -13,10 +13,10 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
-
+import { WEB_URL, API_URL } from "../../../constants/Settings";
 import { useAuth } from "../../../contexts/Auth";
 import axios from "axios";
-import BookBox from "../../../components/BookBox";
+
 const Kutuphane = () => {
   const navigation = useNavigation();
   const menubar = () => {
@@ -40,11 +40,7 @@ const Kutuphane = () => {
 
   const getBooks = async () => {
     await axios
-      .get(WEB_URL + "/api/Book", {
-        headers: {
-          Authorization: `Bearer ${auth.authData.token}`,
-        },
-      })
+      .get(API_URL + "/api/Book")
       .then((response) => {
         const data = response.data;
         setBooks(data);
@@ -55,13 +51,8 @@ const Kutuphane = () => {
   const gotoRead = async (id) => {
     await axios
       .post(
-        WEB_URL + `/api/UserBook?UserId=${auth.authData.id}&BookId=${book.id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.authData.token}`,
-          },
-        }
+        API_URL + `/api/UserBook?UserId=${auth.authData.id}&BookId=${book.id}`,
+        formData
       )
       .then((response) => {
         if (response.status == 200) {
@@ -105,7 +96,9 @@ const Kutuphane = () => {
               return (
                 <TouchableOpacity onPress={() => gotoRead(item.id)} key={index}>
                   <Image
-                    source={imageSources[index]}
+                    source={{
+                      uri: `${WEB_URL}/uploadedfiles/Image/${item.photoUrl}`,
+                    }}
                     style={{
                       width: 100,
                       height: 120,
@@ -115,6 +108,9 @@ const Kutuphane = () => {
                       resizeMode: "cover",
                     }}
                   />
+                  <Text style={{ color: "white", textAlign: "center" }}>
+                    {item.name}
+                  </Text>
                 </TouchableOpacity>
               );
             })}
