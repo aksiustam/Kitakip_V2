@@ -1,3 +1,3 @@
-export const API_URL = "https://nextgoldpencil49.conveyor.cloud"; // http://localhost:28934/
+export const API_URL = "https://othertantree6.conveyor.cloud"; // https://192.168.1.100:45457/
 
-export const WEB_URL = "https://foundmintpage59.conveyor.cloud"; // http://localhost:45053
+export const WEB_URL = "https://earlypurplerock10.conveyor.cloud"; // https://192.168.1.100:45458/

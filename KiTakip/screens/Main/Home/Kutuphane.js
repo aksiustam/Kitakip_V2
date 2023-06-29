@@ -25,13 +25,6 @@ const Kutuphane = () => {
 
   const auth = useAuth();
 
-  const imageSources = [
-    require("../../../assets/Book/image2.png"),
-    require("../../../assets/Book/image4.png"),
-    require("../../../assets/Book/image3.png"),
-    require("../../../assets/Book/image1.png"),
-  ];
-
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -49,9 +42,11 @@ const Kutuphane = () => {
   };
 
   const gotoRead = async (id) => {
+    const formData = { userId: auth.authData.id, bookId: id, live: true };
     await axios
       .post(
-        API_URL + `/api/UserBook?UserId=${auth.authData.id}&BookId=${book.id}`,
+        API_URL +
+          `/api/UserBook?UserId=${auth.authData.id}&BookId=${books[id].id}`,
         formData
       )
       .then((response) => {
@@ -59,7 +54,11 @@ const Kutuphane = () => {
           navigation.navigate("BookRead", books[id]);
         }
       })
-      .catch((err) => console.log("Hata " + err));
+      .catch((err) => {
+        if (err.response.status == 422) {
+          navigation.navigate("BookRead", books[id]);
+        } else console.log("Hata " + err);
+      });
   };
 
   return (
@@ -94,7 +93,7 @@ const Kutuphane = () => {
           >
             {books.map((item, index) => {
               return (
-                <TouchableOpacity onPress={() => gotoRead(item.id)} key={index}>
+                <TouchableOpacity onPress={() => gotoRead(index)} key={index}>
                   <Image
                     source={{
                       uri: `${WEB_URL}/uploadedfiles/Image/${item.photoUrl}`,

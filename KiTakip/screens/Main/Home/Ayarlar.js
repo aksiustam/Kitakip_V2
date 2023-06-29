@@ -37,6 +37,7 @@ const Ayarlar = () => {
   const { width, height } = useWindowDimensions();
   const [font, setFont] = useState("10px");
   const [index, setIndex] = useState(0);
+  const [page, setPage] = useState(2);
   const FontSize = async () => {
     if (index == 0) {
       setIndex(index + 1);
@@ -69,11 +70,6 @@ const Ayarlar = () => {
       mode: currentMode,
     });
   };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
   const showTimepicker = () => {
     showMode("time");
   };
@@ -114,6 +110,23 @@ const Ayarlar = () => {
 
   //#endregion
 
+  const PushNoti = async () => {
+    await AsyncStorage.setItem(
+      "@Bildirim",
+      JSON.stringify({
+        date: date.toString(),
+        page: page,
+        send: true,
+      })
+    );
+
+    const currentDate = new Date();
+    const selectedDateTime = new Date(date);
+    const remainingMilliseconds =
+      selectedDateTime.getTime() - currentDate.getTime();
+    const remainingSeconds = Math.floor(remainingMilliseconds / 1000);
+    await schedulePushNotification(remainingSeconds, page);
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearGradient
@@ -165,32 +178,98 @@ const Ayarlar = () => {
         deviceHeight={height * 2}
       >
         <View style={styles.modalcontainer}>
-          <Text style={{ textAlign: "center" }}>HATIRLATICI!</Text>
-          <Button onPress={showDatepicker} title="Tarih" />
-          <Button onPress={showTimepicker} title="Saat" />
-
-          <Text>{date.toLocaleString()} a Bildirim Oluştur</Text>
-          <Button
-            title="Bildirim Oluştur"
-            onPress={async () => {
-              setModalVisible(false);
-              await schedulePushNotification();
-            }}
-          />
+          <View style={styles.container}>
+            <View style={styles.upcontainer}>
+              <Text
+                style={{ paddingBottom: 15, fontSize: 26, fontWeight: "bold" }}
+              >
+                SAAT
+              </Text>
+              <TouchableOpacity style={styles.box} onPress={showTimepicker}>
+                <Text style={{ fontSize: 26 }}>
+                  {date.getHours()}:{date.getMinutes()}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.upcontainer}>
+              <Text
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={{ paddingBottom: 15, fontSize: 26, fontWeight: "bold" }}
+              >
+                SAYFA SAYISI
+              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  style={[
+                    styles.box,
+                    { backgroundColor: page === 2 ? "#086D65" : "white" },
+                  ]}
+                  onPress={() => setPage(2)}
+                >
+                  <Text style={{ fontSize: 26 }}>2</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.box,
+                    { backgroundColor: page === 3 ? "#086D65" : "white" },
+                  ]}
+                  onPress={() => setPage(3)}
+                >
+                  <Text style={{ fontSize: 26 }}>3</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.box,
+                    { backgroundColor: page === 5 ? "#086D65" : "white" },
+                  ]}
+                  onPress={() => setPage(5)}
+                >
+                  <Text style={{ fontSize: 26 }}>5</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.box,
+                    { backgroundColor: page === 10 ? "#086D65" : "white" },
+                  ]}
+                  onPress={() => setPage(10)}
+                >
+                  <Text style={{ fontSize: 26 }}>10</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{ marginTop: 15 }}>
+              <Button
+                title="Bildirim Oluştur"
+                onPress={async () => {
+                  setModalVisible(false);
+                  await PushNoti();
+                }}
+              />
+            </View>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
   );
 };
 
-async function schedulePushNotification() {
+async function schedulePushNotification(time, page) {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Kolay Okuma",
-      body: "Kitap okuma zamanınız geldi",
+      body: `Kitap Okuma Vakti.${page} Sayfanız Hazır.Hemen Okuyun`,
     },
-    trigger: { seconds: 3 },
-  });
+    trigger: { seconds: time },
+  })
+    .then(
+      setNotData({
+        date: notdata.date,
+        page: notdata.page,
+        send: true,
+      })
+    )
+    .then(console.log("Notification send..."));
 }
 async function registerForPushNotificationsAsync() {
   let token;
@@ -243,6 +322,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "column",
     borderRadius: 30,
+  },
+  upcontainer: {
+    marginTop: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  box: {
+    paddingHorizontal: 12,
+    marginHorizontal: 4,
+    borderRadius: 10,
+    borderWidth: 1,
   },
 
   //#region MENU

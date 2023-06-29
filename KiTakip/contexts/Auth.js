@@ -1,19 +1,34 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import WEB_URL from "../constants/Settings";
-import { useNavigation } from "@react-navigation/native";
-
+import { API_URL } from "../constants/Settings";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 const AuthContext = createContext({
   authData: undefined,
+  notdata: undefined,
   loading: false,
   signIn: async () => {},
   signOut: () => {},
-  register: async () => {},
+});
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
 });
 
 const AuthProvider = ({ children }) => {
   const [authData, setAuthData] = useState("");
+  const [notdata, setNotData] = useState("");
   const [error, setError] = useState("Error");
   //the AuthContext start with loading equals true
   //and stay like this, until the data be load from Async Storage
@@ -23,6 +38,7 @@ const AuthProvider = ({ children }) => {
     //Every time the App is opened, this provider is rendered
     //and call de loadStorage function.
     loadStorageData();
+    loadNotification();
   }, []);
 
   async function loadStorageData() {
@@ -42,27 +58,125 @@ const AuthProvider = ({ children }) => {
     }
   }
 
-  const signIn = async (email, pass) => {
-    if (email === null || email === "") return "Email boş olamaz";
+  async function loadNotification() {
+    try {
+      const notificationSerialized = await AsyncStorage.getItem("@Bildirim");
+      const hey = JSON.parse(notificationSerialized);
 
-    if (pass === null || pass === "") return "Password boş olamaz";
+      if (!hey.send) {
+        const currentDate = new Date();
+        const selectedDateTime = new Date(hey.date);
+        const remainingMilliseconds =
+          selectedDateTime.getTime() - currentDate.getTime();
+        var remainingSeconds = Math.floor(remainingMilliseconds / 1000);
+        if (remainingSeconds < 0) remainingSeconds += 86400;
+        console.log("Notifi içinde " + hey.send);
+        console.log("current : " + currentDate);
+        console.log("selected : " + hey.date);
+        console.log("hey : " + remainingSeconds);
+        await schedulePushNotification(remainingSeconds, notification.page);
+        setNotData({
+          date: hey.date,
+          page: hey.page,
+          send: true,
+        });
+        await AsyncStorage.setItem(
+          "@Bildirim",
+          JSON.stringify({
+            date: hey.date,
+            page: hey.page,
+            send: true,
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(async (notification) => {
+        setNotification(notification);
+        await AsyncStorage.setItem(
+          "@Bildirim",
+          JSON.stringify({
+            date: notdata.date,
+            page: notdata.page,
+            send: false,
+          })
+        );
+        console.log("Send = false");
+        setNotData({
+          date: notdata.date,
+          page: notdata.page,
+          send: false,
+        });
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  const signIn = async (date, page) => {
+    await AsyncStorage.setItem(
+      "@Bildirim",
+      JSON.stringify({
+        date: date,
+        page: page,
+        send: true,
+      })
+    );
+
+    const currentDate = new Date();
+    const selectedDateTime = new Date(date);
+    const remainingMilliseconds =
+      selectedDateTime.getTime() - currentDate.getTime();
+    const remainingSeconds = Math.floor(remainingMilliseconds / 1000);
+    console.log("current : " + currentDate);
+    console.log("selected : " + date);
+    console.log("hey : " + remainingSeconds);
+    await schedulePushNotification(remainingSeconds, page);
 
     const formData = {
-      email: email,
-      pass: pass,
+      name: Device.deviceName,
+      deviceId: expoPushToken,
     };
-
     await axios
-      .post(WEB_URL + "/api/User/Login", formData)
+      .post(API_URL + "/api/User/UserLogin", formData)
       .then((response) => {
         const data = response.data;
+
         setAuthData({
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          token: data.token,
+          id: data,
+          name: Device.deviceName,
+          token: expoPushToken,
         });
-        AsyncStorage.setItem("@AuthData", JSON.stringify(data));
+        AsyncStorage.setItem(
+          "@AuthData",
+          JSON.stringify({
+            id: data,
+            name: Device.deviceName,
+            token: expoPushToken,
+          })
+        );
       })
       .catch((err) => console.log("Hata" + err));
   };
@@ -77,39 +191,59 @@ const AuthProvider = ({ children }) => {
     await AsyncStorage.removeItem("@AuthData");
   };
 
-  const register = async (name, email, pass) => {
-    if (name === null || name === "") return "Ad boş olamaz";
+  async function schedulePushNotification(time, page) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Kolay Okuma",
+        body: `Kitap Okuma Vakti.${page} Sayfanız Hazır.Hemen Okuyun`,
+      },
+      trigger: { seconds: time },
+    })
+      .then(
+        setNotData({
+          date: notdata.date,
+          page: notdata.page,
+          send: true,
+        })
+      )
+      .then(console.log("Notification send..."));
+  }
+  async function registerForPushNotificationsAsync() {
+    let token;
 
-    if (email === null || email === "") return "Email boş olamaz";
-
-    if (pass === null || pass === "") return "Password boş olamaz";
-
-    const formData = {
-      name: name,
-      email: email,
-      pass: pass,
-    };
-
-    await axios
-      .post(WEB_URL + "/api/User", formData)
-      .then((response) => {
-        const data = response.data;
-        setError(data);
-      })
-      .catch((error) => {
-        const err = error.response.data;
-        setError(err);
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
       });
+    }
 
-    return "Mesaj : " + error;
-  };
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    return token;
+  }
 
   return (
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
-    <AuthContext.Provider
-      value={{ authData, loading, signIn, signOut, register }}
-    >
+    <AuthContext.Provider value={{ authData, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

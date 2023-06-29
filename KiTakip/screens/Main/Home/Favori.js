@@ -102,13 +102,6 @@ const Favori = () => {
               );
             })}
           </ScrollView>
-
-          {/* <FlatList
-            style={{ width: "100%" }}
-            data={userbook}
-            renderItem={({ item }) => <BookBox book={item.book} user={true} />}
-            keyExtractor={(item) => item.id}
-          /> */}
         </View>
       </LinearGradient>
     </SafeAreaView>

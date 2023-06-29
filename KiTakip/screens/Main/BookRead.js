@@ -8,12 +8,12 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import Colors from "../../constants/Colors";
 import { Reader, ReaderProvider, useReader } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
+import { API_URL } from "../../constants/Settings";
 function Inner() {
   const route = useRoute();
   const book = route.params;
@@ -24,7 +24,7 @@ function Inner() {
 
   const navigation = useNavigation();
   const menubar = () => {
-    navigation.openDrawer();
+    navigation.toggleDrawer();
   };
 
   //#region Page Load
@@ -72,7 +72,7 @@ function Inner() {
             adjustsFontSizeToFit
             style={styles.topbartext}
           >
-            {book.name}{" "}
+            {book.name}
           </Text>
         </View>
         <TouchableOpacity style={styles.menubox} onPress={menubar}>
@@ -81,7 +81,7 @@ function Inner() {
       </View>
       <SafeAreaView style={styles.container}>
         <Reader
-          src={WEB_URL + `/api/Book/Download/${book.id}.epub`}
+          src={`${API_URL}/api/Book/Epub/${book.id}.epub`}
           width={width}
           height={height * 0.93}
           fileSystem={useFileSystem}

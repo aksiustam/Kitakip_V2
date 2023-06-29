@@ -1,10 +1,13 @@
 import React from "react";
 import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
 
-const Page = () => {
+const PageOne = () => {
   return (
     <View style={styles.container}>
-      <Image source={require("../../assets/Logo/logo.png")} />
+      <Image
+        style={styles.image}
+        source={require("../../assets/Logo/logo.png")}
+      />
       <View style={{ marginTop: 30 }}>
         <Text numberOfLines={1} adjustsFontSizeToFit style={styles.textbig}>
           Kolay Okuma
@@ -24,6 +27,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: Dimensions.get("window").width,
   },
+  image: {
+    width: 200,
+    height: 200,
+  },
   textbig: { fontSize: 36, color: "white", fontWeight: "bold" },
   textsmall: {
     position: "relative",
@@ -35,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Page;
+export default PageOne;

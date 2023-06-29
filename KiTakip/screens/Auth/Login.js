@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "../../contexts/Auth";
-import { FlatListIndicator } from "@fanchenbao/react-native-scroll-indicator";
-import Page from "../../components/LoginMenu/Page";
+
+import PageOne from "../../components/LoginMenu/PageOne";
 import Slider from "../../components/LoginMenu/Slider";
+import PageTwo from "../../components/LoginMenu/PageTwo";
 
 const Login = () => {
   const cards = [
@@ -62,7 +63,8 @@ const Login = () => {
             scrollEventThrottle={6}
             nestedScrollEnabled={true}
           >
-            <Page />
+            <PageOne />
+            <PageTwo />
             <Slider />
           </ScrollView>
         }
