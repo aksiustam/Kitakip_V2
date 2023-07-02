@@ -72,7 +72,13 @@ const Kutuphane = () => {
       >
         <View>
           <View style={styles.topbar}>
-            <Text style={styles.topbartext}>KÜTÜPHANE</Text>
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              style={styles.topbartext}
+            >
+              KÜTÜPHANE
+            </Text>
           </View>
           <TouchableOpacity style={styles.menubox} onPress={menubar}>
             <Feather name="menu" size={50} color="white" />
@@ -93,24 +99,29 @@ const Kutuphane = () => {
           >
             {books.map((item, index) => {
               return (
-                <TouchableOpacity onPress={() => gotoRead(index)} key={index}>
-                  <Image
-                    source={{
-                      uri: `${WEB_URL}/uploadedfiles/Image/${item.photoUrl}`,
-                    }}
-                    style={{
-                      width: 100,
-                      height: 120,
-                      marginVertical: 5,
-                      marginHorizontal: 3,
-                      borderRadius: 20,
-                      resizeMode: "cover",
-                    }}
-                  />
-                  <Text style={{ color: "white", textAlign: "center" }}>
-                    {item.name}
-                  </Text>
-                </TouchableOpacity>
+                <View key={index} style={styles.view}>
+                  <TouchableOpacity onPress={() => gotoRead(index)}>
+                    <View
+                      style={{
+                        width: 104,
+                        height: 120,
+                        justifyContent: "center",
+                        alignItems: "stretch",
+                      }}
+                    >
+                      <Image
+                        source={{
+                          uri: `${WEB_URL}/uploadedfiles/Image/${item.photoUrl}`,
+                        }}
+                        style={{
+                          flex: 1,
+                          flexGrow: 1,
+                          resizeMode: "center",
+                        }}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
               );
             })}
           </ScrollView>
@@ -129,10 +140,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
   },
+  view: {
+    height: 120,
+    width: 100,
+    justifyContent: "center",
+
+    marginVertical: 12,
+    marginHorizontal: 5,
+    borderRadius: 20,
+  },
   header: { paddingTop: 140 },
   topbar: {
     position: "absolute",
     backgroundColor: "white",
+    width: Dimensions.get("window").width / 1.4,
     paddingTop: 50,
     paddingBottom: 10,
     paddingLeft: 15,

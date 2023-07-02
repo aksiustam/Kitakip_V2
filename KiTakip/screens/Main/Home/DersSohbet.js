@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -11,13 +11,34 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from "../../../constants/Settings";
 import { Feather } from "@expo/vector-icons";
 import Colors from "../../../constants/Colors";
+import axios from "axios";
 
 const DersSohbet = () => {
   const navigation = useNavigation();
   const menubar = () => {
     navigation.openDrawer();
+  };
+  const [videodata, setVideoData] = useState([]);
+
+  useEffect(() => {
+    getVideos();
+  }, []);
+
+  const getVideos = async () => {
+    await axios
+      .get(API_URL + "/api/Video/Ders")
+      .then((response) => {
+        const data = response.data;
+        setVideoData(data);
+      })
+      .catch((err) => console.log("Hata " + err));
+  };
+
+  const gotoVideo = (index) => {
+    navigation.navigate("VideoPage", videodata[index]);
   };
 
   const Array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
@@ -32,22 +53,39 @@ const DersSohbet = () => {
       >
         <View style={{ paddingTop: 130 }}>
           <View style={styles.topbar}>
-            <Text style={styles.topbartext}>DERS VİDEOLARI</Text>
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              style={styles.topbartext}
+            >
+              DERS VİDEOLARI
+            </Text>
           </View>
           <TouchableOpacity style={styles.menubox} onPress={menubar}>
             <Feather name="menu" size={50} color="white" />
           </TouchableOpacity>
         </View>
         <View style={styles.containerwrap}>
-          {Array.map((item, index) => {
+          {videodata.map((item, index) => {
             return (
-              <TouchableOpacity style={styles.box} key={index}>
-                <Image
-                  source={require("../../../assets/Icon/video.png")}
-                  style={styles.image}
-                />
-                <Text style={styles.text}>KISA SOHBETLER</Text>
-              </TouchableOpacity>
+              <View style={styles.box} key={index}>
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={() => gotoVideo(index)}
+                >
+                  <Image
+                    source={require("../../../assets/Icon/video.png")}
+                    style={styles.image}
+                  />
+                  <Text adjustsFontSizeToFit style={styles.text}>
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             );
           })}
         </View>
@@ -74,6 +112,7 @@ const styles = StyleSheet.create({
     color: "#FBE116",
     fontFamily: "sans-serif-condensed",
     fontSize: 12,
+    textAlign: "center",
   },
   image: {
     width: 55,
@@ -82,7 +121,7 @@ const styles = StyleSheet.create({
   box: {
     width: 100,
     height: 100,
-    margin: 8,
+    margin: 9,
     borderRadius: 15,
     backgroundColor: Colors.light.tint,
     justifyContent: "center",
@@ -91,6 +130,7 @@ const styles = StyleSheet.create({
   topbar: {
     position: "absolute",
     backgroundColor: "white",
+    width: Dimensions.get("window").width / 1.4,
     paddingTop: 50,
     paddingBottom: 10,
     paddingLeft: 15,

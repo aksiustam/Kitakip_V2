@@ -28,7 +28,13 @@ const OzelHayat = () => {
       >
         <View style={styles.header}>
           <View style={styles.topbar}>
-            <Text style={styles.topbartext}>ÖZEL HAYATLAR</Text>
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              style={styles.topbartext}
+            >
+              ÖZEL HAYATLAR
+            </Text>
           </View>
           <TouchableOpacity style={styles.menubox} onPress={menubar}>
             <Feather name="menu" size={50} color="white" />
@@ -73,6 +79,7 @@ const styles = StyleSheet.create({
   topbar: {
     position: "absolute",
     backgroundColor: "white",
+    width: Dimensions.get("window").width / 1.4,
     paddingTop: 50,
     paddingBottom: 10,
     paddingLeft: 15,

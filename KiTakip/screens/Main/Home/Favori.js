@@ -11,11 +11,11 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { useAuth } from "../../../contexts/Auth";
 import axios from "axios";
-import { API_URL } from "../../../constants/Settings";
+import { WEB_URL, API_URL } from "../../../constants/Settings";
 const Favori = () => {
   const navigation = useNavigation();
   const menubar = () => {
@@ -23,34 +23,26 @@ const Favori = () => {
   };
 
   const auth = useAuth();
-
+  const isFocused = useIsFocused();
   const [userbook, setUserBook] = useState([]);
 
   useEffect(() => {
     getUserBooks();
   }, []);
+  useEffect(() => {
+    if (isFocused) {
+      getUserBooks();
+    }
+  }, [isFocused]);
 
   const getUserBooks = async () => {
     await axios
-      .get(API_URL + `/api/UserBook/${auth.authData.id}`, {
-        headers: {
-          Authorization: `Bearer ${auth.authData.token}`,
-        },
-      })
+      .get(API_URL + `/api/UserBook/${auth.authData.id}`)
       .then((response) => {
-        if (response.status == 200) {
-          setUserBook(response.data);
-        }
+        setUserBook(response.data);
       })
       .catch((err) => console.log("Hata " + err));
   };
-
-  const imageSources = [
-    require("../../../assets/Book/image1.png"),
-    require("../../../assets/Book/image4.png"),
-    require("../../../assets/Book/image2.png"),
-    require("../../../assets/Book/image3.png"),
-  ];
 
   const onClick = (index) => {
     navigation.navigate("BookRead", userbook[index].book);
@@ -65,7 +57,13 @@ const Favori = () => {
         locations={[0.1, 0.7]}
       >
         <View style={styles.topbar}>
-          <Text style={styles.topbartext}>FAVORİLERİM</Text>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={styles.topbartext}
+          >
+            FAVORİLERİM
+          </Text>
         </View>
         <TouchableOpacity style={styles.menubox} onPress={menubar}>
           <Feather name="menu" size={50} color="white" />
@@ -86,19 +84,29 @@ const Favori = () => {
           >
             {userbook.map((item, index) => {
               return (
-                <TouchableOpacity onPress={() => onClick(index)} key={index}>
-                  <Image
-                    source={imageSources[index]}
-                    style={{
-                      width: 100,
-                      height: 120,
-                      marginVertical: 5,
-                      marginHorizontal: 3,
-                      borderRadius: 20,
-                      resizeMode: "cover",
-                    }}
-                  />
-                </TouchableOpacity>
+                <View key={index} style={styles.view}>
+                  <TouchableOpacity onPress={() => onClick(index)}>
+                    <View
+                      style={{
+                        width: 104,
+                        height: 120,
+                        justifyContent: "center",
+                        alignItems: "stretch",
+                      }}
+                    >
+                      <Image
+                        source={{
+                          uri: `${WEB_URL}/uploadedfiles/Image/${item.book.photoUrl}`,
+                        }}
+                        style={{
+                          flex: 1,
+                          flexGrow: 1,
+                          resizeMode: "center",
+                        }}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
               );
             })}
           </ScrollView>
@@ -120,6 +128,7 @@ const styles = StyleSheet.create({
   topbar: {
     position: "absolute",
     backgroundColor: "white",
+    width: Dimensions.get("window").width / 1.4,
     paddingTop: 50,
     paddingBottom: 10,
     paddingLeft: 15,

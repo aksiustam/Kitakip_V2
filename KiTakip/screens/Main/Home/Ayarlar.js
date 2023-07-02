@@ -124,7 +124,8 @@ const Ayarlar = () => {
     const selectedDateTime = new Date(date);
     const remainingMilliseconds =
       selectedDateTime.getTime() - currentDate.getTime();
-    const remainingSeconds = Math.floor(remainingMilliseconds / 1000);
+    var remainingSeconds = Math.floor(remainingMilliseconds / 1000);
+    if (remainingSeconds < 0) remainingSeconds += 86400;
     await schedulePushNotification(remainingSeconds, page);
   };
   return (
@@ -138,7 +139,13 @@ const Ayarlar = () => {
       >
         <View style={{ paddingTop: 140 }}>
           <View style={styles.topbar}>
-            <Text style={styles.topbartext}>AYARLAR</Text>
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              style={styles.topbartext}
+            >
+              AYARLAR
+            </Text>
           </View>
           <TouchableOpacity style={styles.menubox} onPress={menubar}>
             <Feather name="menu" size={50} color="white" />
@@ -350,6 +357,7 @@ const styles = StyleSheet.create({
   topbar: {
     position: "absolute",
     backgroundColor: "white",
+    width: Dimensions.get("window").width / 1.4,
     paddingTop: 50,
     paddingBottom: 10,
     paddingLeft: 15,
